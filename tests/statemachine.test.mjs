@@ -8,8 +8,11 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 
 const root = new URL('../', import.meta.url);
-const aslText = readFileSync(new URL('statemachine/lastcall.asl.json', root), 'utf8');
-const template = readFileSync(new URL('template.yaml', root), 'utf8');
+// A Windows checkout with core.autocrlf has CRLF line endings; the checks below
+// match on "\n", so normalise first.
+const read = (path) => readFileSync(new URL(path, root), 'utf8').replace(/\r\n/g, '\n');
+const aslText = read('statemachine/lastcall.asl.json');
+const template = read('template.yaml');
 const asl = JSON.parse(aslText);
 const s = asl.States;
 

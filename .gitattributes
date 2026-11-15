@@ -1,0 +1,5 @@
+# Check text files out with LF on every platform, so a Windows clone matches
+# what the tests, the SAM template and the deployed site expect.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
