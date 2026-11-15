@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plan an outing · Last Call</title>
+  <meta name="description" content="Tell Last Call what you're doing, when you'll be back and who to tell.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#3346d3">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Last Call home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#3346D3"/><path d="M9.6 14.2a9 9 0 0 1 12.8 0M6.4 10.6a13.6 13.6 0 0 1 19.2 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="20.5" r="3.6" fill="#FFB020"/></svg>
+        Last Call
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html#how">How it works</a>
+        <a class="btn btn-sm" href="demo.html">Watch the demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap narrow">
+    <section id="formView">
+      <div class="page-head">
+        <h1>Plan an outing</h1>
+        <p>Tell Last Call what you're doing, when you'll be back and who to tell. Check in by then and nothing happens.</p>
+      </div>
+
+      <div class="saved-plans" id="saved" hidden></div>
+
+      <form class="card form-card" id="planForm" novalidate>
+        <div class="form-section">
+          <h2><span class="n">1</span>What are you doing?</h2>
+          <div class="row-2">
+            <div class="field">
+              <label class="label" for="name">Your first name</label>
+              <input class="input" id="name" name="name" maxlength="40" autocomplete="given-name" required placeholder="Sam">
+            </div>
+            <div class="field">
+              <label class="label" for="phone">Your phone <span class="opt">(optional)</span></label>
+              <input class="input" id="phone" name="phone" type="tel" maxlength="40" autocomplete="tel" placeholder="+1 555 0100">
+              <span class="hint">Shown to contacts as a call button if they're alerted.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="activity">Activity</label>
+            <input class="input" id="activity" name="activity" maxlength="120" required placeholder="Solo hike: Dipsea Trail loop">
+          </div>
+          <div class="field">
+            <label class="label" for="details">Details for your contacts <span class="opt">(optional)</span></label>
+            <textarea class="textarea" id="details" name="details" maxlength="4000" placeholder="Route, where you parked, what you're wearing, who you're meeting…"></textarea>
+            <span class="hint">Only shown on their alert page. Simple formatting works: **bold**, lists with -, links.</span>
+          </div>
+          <div class="field">
+            <label class="label" for="routeUrl">Route or meeting place link <span class="opt">(optional)</span></label>
+            <input class="input" id="routeUrl" name="routeUrl" type="url" maxlength="2048" inputmode="url" placeholder="https://www.openstreetmap.org/…">
+          </div>
+          <label class="check"><input type="checkbox" id="useLocation"> <span>Use my current location as the starting point<br><span class="hint">Contacts see it on a map only if they're alerted.</span></span></label>
+        </div>
+
+        <div class="form-section">
+          <h2><span class="n">2</span>When will you be back?</h2>
+          <div class="field">
+            <label class="label" for="checkInBy">Check in by</label>
+            <input class="input" id="checkInBy" name="checkInBy" type="datetime-local" required>
+            <div class="chips" role="group" aria-label="Quick picks">
+              <button type="button" class="chip-btn" data-quick="60">+1 h</button>
+              <button type="button" class="chip-btn" data-quick="180">+3 h</button>
+              <button type="button" class="chip-btn" data-quick="tonight" id="tonightChip">Tonight 10 PM</button>
+            </div>
+            <span class="hint" id="checkInHint"></span>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label class="label" for="remind">Remind me before</label>
+              <select class="select" id="remind" name="remind">
+                <option value="0">No reminder</option>
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15" selected>15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="120">2 hours</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="label" for="grace">Grace period after</label>
+              <select class="select" id="grace" name="grace">
+                <option value="0">None: alert right away</option>
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15" selected>15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="120">2 hours</option>
+              </select>
+              <span class="hint">You get an urgent ping first. Contacts are alerted after this.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2><span class="n">3</span>Who should we tell?</h2>
+          <p class="hint">Contacts are alerted one at a time, in this order, until someone says “I'm on it”. Up to 5.</p>
+          <div id="contacts" style="display:grid;gap:12px"></div>
+          <div><button type="button" class="btn" id="addContact"></button></div>
+          <details class="adv">
+            <summary>More options</summary>
+            <div style="display:grid;gap:16px">
+              <div class="field">
+                <label class="label" for="ack">Time each contact has to respond</label>
+                <select class="select" id="ack" name="ack">
+                  <option value="2">2 minutes</option>
+                  <option value="5">5 minutes</option>
+                  <option value="10" selected>10 minutes</option>
+                  <option value="15">15 minutes</option>
+                  <option value="30">30 minutes</option>
+                  <option value="60">1 hour</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="label" for="ownerNotifyUrl">Where to send your own reminders <span class="opt">(optional)</span></label>
+                <input class="input" id="ownerNotifyUrl" name="ownerNotifyUrl" type="url" inputmode="url" placeholder="https://ntfy.sh/your-topic">
+                <span class="hint">Leave blank and we'll create a private ntfy push channel for you to subscribe to.</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div class="form-actions">
+          <div class="callout callout-error" id="formError" role="alert" hidden></div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="submitBtn">Start my plan</button>
+          <p class="sos-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span><b>Last Call is not an emergency service.</b> If someone is in danger, call your local emergency number.</span></p>
+        </div>
+      </form>
+    </section>
+
+    <section id="resultView" hidden aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Last Call · no account needed. Your links are the keys, so keep yours private.</span>
+      <a href="index.html">Home</a>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="qr.js"></script>
+  <script src="common.js"></script>
+  <script src="new.js"></script>
+</body>
+</html>

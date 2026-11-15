@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Alert · Last Call</title>
+  <meta name="description" content="A Last Call alert from someone who trusts you.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#1c2140">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Last Call home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#3346D3"/><path d="M9.6 14.2a9 9 0 0 1 12.8 0M6.4 10.6a13.6 13.6 0 0 1 19.2 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="20.5" r="3.6" fill="#FFB020"/></svg>
+        Last Call
+      </a>
+      <span class="live" id="live" hidden><span class="dot" aria-hidden="true"></span><span id="liveText">Live</span></span>
+    </div>
+  </header>
+
+  <main id="main" class="app-wrap">
+    <div id="loading" class="problem" aria-live="polite"><span class="spinner" aria-hidden="true"></span><p>Loading…</p></div>
+    <div id="problem" class="problem" hidden></div>
+
+    <section id="live-view" hidden>
+      <div class="alert-hero mode-standby" id="hero" role="status" aria-live="polite">
+        <div class="row">
+          <span class="ic" id="heroIcon" aria-hidden="true"></span>
+          <div>
+            <p class="kick" id="heroKick"></p>
+            <h1 id="heroTitle"></h1>
+          </div>
+        </div>
+        <p class="sub" id="heroSub"></p>
+      </div>
+
+      <div class="standby-card" id="standby" hidden></div>
+
+      <section class="app-section" id="planSec" aria-labelledby="planTitle">
+        <h2 id="planTitle">The plan</h2>
+        <div class="details-card" id="details"></div>
+      </section>
+
+      <section class="app-section" id="locSec" aria-labelledby="locTitle" hidden>
+        <h2 id="locTitle">Last known location</h2>
+        <div class="map-box">
+          <div class="map-crop" id="mapSlot"></div>
+          <div class="map-meta" id="mapMeta"></div>
+          <p class="map-credit">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></p>
+        </div>
+      </section>
+
+      <div class="app-section call-row" id="callRow" hidden></div>
+
+      <section class="app-section" id="peopleSec" aria-labelledby="peopleTitle">
+        <h2 id="peopleTitle">Who's been alerted</h2>
+        <div id="people"></div>
+      </section>
+
+      <section class="app-section" id="tlSec" aria-labelledby="tlTitle" hidden>
+        <h2 id="tlTitle">What happened</h2>
+        <div id="timeline"></div>
+      </section>
+
+      <div class="app-section" id="noteSlot"></div>
+
+      <form class="ack-bar" id="ackBar" hidden>
+        <label class="sr-only" for="ackNote">Note for the others (optional)</label>
+        <input class="input" id="ackNote" name="note" maxlength="280" autocomplete="off" placeholder="Add a note (optional), e.g. calling now">
+        <button type="submit" class="big-ack" id="ackBtn" data-action="ack">I'm on it</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>This link is only for you. Please don't forward it.</span>
+      <a href="index.html">What is Last Call?</a>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="markdown.js"></script>
+  <script src="common.js"></script>
+  <script src="alert.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Last Call · If you don't check in, the people you trust find out</title>
+  <meta name="description" content="A check-in safety net for anyone doing something alone. Tell Last Call what you're doing, when you'll be back and who to tell. Miss your check-in and your contacts are alerted one by one.">
+  <meta name="theme-color" content="#3346d3">
+  <meta property="og:title" content="Last Call">
+  <meta property="og:description" content="If you don't check in, the people you trust find out.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-landing">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Last Call home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#3346D3"/><path d="M9.6 14.2a9 9 0 0 1 12.8 0M6.4 10.6a13.6 13.6 0 0 1 19.2 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="20.5" r="3.6" fill="#FFB020"/></svg>
+        Last Call
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#how">How it works</a>
+        <a href="#why">Why Step Functions</a>
+        <a class="btn btn-sm btn-primary" href="new.html">Plan an outing</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow"><b>SAFETY NET</b> For anything you do alone</span>
+          <h1>If you don't check in, the people you trust <em>find out.</em></h1>
+          <p class="lede">Solo hike, first date, late shift, long drive? Tell Last Call what you're doing, when you'll be back and who to tell. Check in and nothing happens. Miss it, and your contacts are alerted one by one, with your plan and last known location, until someone says “I'm on it”.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg" href="new.html">Plan an outing</a>
+            <a class="btn btn-lg" href="demo.html"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m7 4 13 8-13 8V4z"/></svg>Watch a 2-minute demo</a>
+          </div>
+          <div class="hero-facts">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>No account</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Free push alerts via ntfy</span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>One person at a time, never a group blast</span>
+          </div>
+        </div>
+
+        <div class="story" aria-label="Example: what the notifications look like">
+          <div class="notif n-warn">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+            <div>
+              <div class="meta"><span>To Sam</span><span>6:15 PM</span></div>
+              <b>Check in by 6:30 PM</b>
+              <p>Tap I'm safe when you're back from: Solo hike, Dipsea Trail loop</p>
+              <div class="acts"><span>I'm safe</span><span>+30 min</span></div>
+            </div>
+          </div>
+          <div class="notif n-no">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            <div>
+              <div class="meta"><span>To Alex, Sam's sister</span><span>6:46 PM</span></div>
+              <b>Sam hasn't checked in</b>
+              <p>Solo hike, Dipsea Trail loop · 16 min overdue · last known location on the map</p>
+              <div class="acts"><span>Open alert</span><span>I'm on it</span></div>
+            </div>
+          </div>
+          <div class="notif n-ok">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <div>
+              <div class="meta"><span>To Alex</span><span>6:52 PM</span></div>
+              <b>Sam checked in safe</b>
+              <p>Phone died, all good. No action needed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="kicker">How it works</span>
+          <h2>Three steps. The last one only happens if you need it.</h2>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span class="num">1</span>
+            <h3>Tell it the plan</h3>
+            <p>What you're doing, when you'll be back, and who to tell: one to five people, in order. Add your route, where you parked, your starting location.</p>
+          </article>
+          <article class="step">
+            <span class="num">2</span>
+            <h3>Check in when you're back</h3>
+            <p>One tap on <b>I'm safe</b>, from your plan page or right on the reminder push. Running late? Tap <b>+30 min</b>. Nobody is bothered.</p>
+          </article>
+          <article class="step">
+            <span class="num">3</span>
+            <h3>Miss it, and they find out</h3>
+            <p>After a short grace period your first contact gets an urgent alert with your plan and location. No answer? The next one does. “I'm on it” stops the chain, and your “I'm safe” sends everyone an all clear.</p>
+          </article>
+        </div>
+        <div class="uses" aria-label="Good for">
+          <span>Solo hikes</span><span>First dates</span><span>Late shifts</span><span>Long drives</span><span>Trail runs</span><span>Open-water swims</span><span>Living alone</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="why">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="kicker">Why Step Functions</span>
+          <h2>One workflow per plan. Waiting is free.</h2>
+          <p class="sub">Each plan is a single Standard Step Functions execution running one small loop. It sleeps until the next milestone (reminder, deadline, grace period, next contact) and wakes early only when someone acts.</p>
+        </div>
+        <div class="why-grid">
+          <div class="card diagram-card">
+            <svg class="diagram" viewBox="0 0 720 320" role="img" aria-labelledby="loopTitle loopDesc">
+              <title id="loopTitle">The Last Call workflow loop</title>
+              <desc id="loopDesc">Advance applies due transitions and sends notifications, then checks if the plan is done. If not, WaitForEvent stores a task token and waits until the next milestone or until the API nudges it, then Advance runs again. The API writes DynamoDB and nudges the workflow; it never sends notifications.</desc>
+              <defs>
+                <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 10 5 0 10z"/></marker>
+                <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head dash" d="M0 0 10 5 0 10z"/></marker>
+              </defs>
+              <path class="edge" d="M446 65 H484" marker-end="url(#ah)"/>
+              <path class="edge" d="M576 65 H608" marker-end="url(#ah)"/>
+              <text class="lbl" x="580" y="56">yes</text>
+              <path class="edge" d="M533 90 V252 H452" marker-end="url(#ah)"/>
+              <text class="lbl" x="541" y="176">no</text>
+              <path class="edge" d="M318 210 V108" marker-end="url(#ah)"/>
+              <text class="lbl" x="328" y="150">timeout = next milestone</text>
+              <text class="lbl" x="328" y="166">or a nudge from the API</text>
+              <path class="edge dash" d="M250 65 H198" marker-end="url(#ahd)" marker-start="url(#ahd)"/>
+              <path class="edge dash" d="M104 214 V108" marker-end="url(#ahd)"/>
+              <text class="lbl" x="112" y="158">conditional</text>
+              <text class="lbl" x="112" y="173">write</text>
+              <path class="edge" d="M192 252 H244" marker-end="url(#ah)"/>
+              <text class="lbl" x="196" y="243">nudge</text>
+              <path class="flow" d="M318 210 V65 H533 V252 H318 V210"/>
+
+              <rect class="box store" x="16" y="28" width="176" height="74" rx="14"/>
+              <text class="t" x="32" y="58">DynamoDB</text>
+              <text class="s" x="32" y="80">the plan: source of truth</text>
+
+              <rect class="box brand" x="250" y="28" width="196" height="74" rx="14"/>
+              <text class="t" x="266" y="58">Advance</text>
+              <text class="s" x="266" y="80">apply due steps, notify once</text>
+
+              <rect class="box" x="490" y="40" width="86" height="50" rx="25"/>
+              <text class="t" x="533" y="70" text-anchor="middle">Done?</text>
+
+              <rect class="box ok" x="614" y="40" width="92" height="50" rx="14"/>
+              <text class="t" x="660" y="70" text-anchor="middle">Succeed</text>
+
+              <rect class="box" x="250" y="210" width="196" height="88" rx="14"/>
+              <text class="t" x="266" y="240">WaitForEvent</text>
+              <text class="s mono" x="266" y="262">.waitForTaskToken</text>
+              <text class="s mono" x="266" y="280">TimeoutSecondsPath</text>
+
+              <rect class="box" x="16" y="214" width="176" height="74" rx="14"/>
+              <text class="t" x="32" y="244">HTTP API</text>
+              <text class="s" x="32" y="266">I'm safe · +30 · SOS · ack</text>
+            </svg>
+          </div>
+          <div class="facts">
+            <div class="fact"><h3>The timeout is the schedule</h3><p>WaitForEvent waits for a task token with <code>TimeoutSecondsPath</code> set to the next milestone. No cron, no polling, no queues.</p></div>
+            <div class="fact"><h3>The API never sends notifications</h3><p>Endpoints change the plan in DynamoDB with a conditional write, then nudge the execution with <code>SendTaskSuccess</code>. Every side effect happens in Advance.</p></div>
+            <div class="fact"><h3>Once, even on retries</h3><p>Each alert is marked sent with a conditional write before it goes out, so retries and races never double-notify anyone.</p></div>
+            <div class="fact"><h3>Idle costs nothing</h3><p>HTTP API, Lambda, DynamoDB, Step Functions, S3 and CloudFront. A plan that's waiting six hours is just a paused execution.</p></div>
+          </div>
+        </div>
+
+        <div class="cta-band">
+          <div>
+            <h2>See it run end to end</h2>
+            <p>The demo creates a real plan that misses its check-in in 75 seconds, so you can watch the alerts escalate.</p>
+          </div>
+          <div class="row">
+            <a class="btn btn-primary btn-lg" href="demo.html">Watch the demo</a>
+            <a class="btn btn-lg" href="new.html">Plan an outing</a>
+          </div>
+        </div>
+
+        <p class="sos-note" style="margin-top:28px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span><b>Last Call is not an emergency service.</b> If someone is in danger, call your local emergency number.</span></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Last Call · built for the AWS Builder Center Weekend Challenge</span>
+      <span><a href="new.html">Plan an outing</a> · <a href="demo.html">Demo</a></span>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+</body>
+</html>

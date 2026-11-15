@@ -1,0 +1,102 @@
+{
+  "Comment": "Last Call: one execution per plan, a single loop. Advance applies every transition due now and performs its side effects; WaitForEvent parks a task token and sleeps until the next milestone or until an endpoint nudges it. DynamoDB is the source of truth; this workflow only drives timing.",
+  "StartAt": "Advance",
+  "States": {
+    "Advance": {
+      "Comment": "Read the plan, apply due transitions, send due notifications, return {done, waitSeconds, version, loop}.",
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${AdvanceFunctionArn}",
+        "Payload": {
+          "planId.$": "$.planId",
+          "secrets.$": "$.secrets",
+          "loop.$": "$.next.loop"
+        }
+      },
+      "ResultSelector": {
+        "done.$": "$.Payload.done",
+        "waitSeconds.$": "$.Payload.waitSeconds",
+        "version.$": "$.Payload.version",
+        "loop.$": "$.Payload.loop"
+      },
+      "ResultPath": "$.next",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ClientExecutionTimeoutException",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 5,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        },
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 6,
+          "BackoffRate": 2,
+          "MaxDelaySeconds": 60,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "Done?"
+    },
+    "Done?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.next.done",
+          "BooleanEquals": true,
+          "Next": "Done"
+        }
+      ],
+      "Default": "WaitForEvent"
+    },
+    "WaitForEvent": {
+      "Comment": "Park the task token on the plan and wait for an endpoint's SendTaskSuccess, or time out at the next milestone. Both lead back to Advance.",
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "${WaitForEventFunctionArn}",
+        "Payload": {
+          "planId.$": "$.planId",
+          "taskToken.$": "$$.Task.Token",
+          "version.$": "$.next.version",
+          "loop.$": "$.next.loop"
+        }
+      },
+      "TimeoutSecondsPath": "$.next.waitSeconds",
+      "ResultPath": null,
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ClientExecutionTimeoutException",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.Timeout", "States.TaskFailed"],
+          "ResultPath": "$.lastError",
+          "Next": "Advance"
+        }
+      ],
+      "Next": "Advance"
+    },
+    "Done": {
+      "Type": "Succeed"
+    }
+  }
+}

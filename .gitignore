@@ -1,0 +1,9 @@
+node_modules/
+.aws-sam/
+samconfig.toml
+.env
+*.log
+
+# Private working notes, not part of the project
+SPEC.md
+docs/

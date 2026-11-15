@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Live demo · Last Call</title>
+  <meta name="description" content="Watch Last Call handle a missed check-in end to end: the owner's phone and two contacts, side by side, on the live API.">
+  <meta name="theme-color" content="#1c2140">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-demo">
+  <a class="skip-link" href="#stage">Skip to the demo</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Last Call home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#3346D3"/><path d="M9.6 14.2a9 9 0 0 1 12.8 0M6.4 10.6a13.6 13.6 0 0 1 19.2 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="20.5" r="3.6" fill="#FFB020"/></svg>
+        Last Call
+      </a>
+      <span class="demo-tag">Live demo</span>
+      <div class="demo-top-actions">
+        <button type="button" class="btn btn-sm" id="replayBtn" hidden></button>
+        <a class="btn btn-sm btn-primary" href="new.html" id="planLink">Plan an outing</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="caption" id="caption" data-tone="calm" aria-label="What is happening">
+    <div class="cap-main">
+      <div class="cap-text">
+        <div class="cap-kicker" id="capKicker">Last Call · live demo</div>
+        <div class="cap-stack" aria-live="polite">
+          <div class="cap-layer" id="capA"><p class="cap-line"></p><p class="cap-sub"></p></div>
+          <div class="cap-layer out" id="capB" aria-hidden="true"><p class="cap-line"></p><p class="cap-sub"></p></div>
+        </div>
+      </div>
+      <div class="cap-clock" id="capClock" hidden aria-hidden="true">
+        <div class="big" id="clockBig"></div>
+        <div class="lbl" id="clockLbl"></div>
+      </div>
+    </div>
+    <ol class="stepper" id="stepper" aria-label="Progress" hidden></ol>
+  </section>
+
+  <main class="stage" id="stage">
+    <div class="phones-area" id="phonesArea">
+      <div class="intro" id="intro">
+        <div class="card intro-card">
+          <h1>Watch a missed check-in, end to end</h1>
+          <p>One click creates a real plan for Sam on the live API. You'll see Sam's phone and the phones of Sam's two contacts, side by side, as the plan plays out.</p>
+          <div class="facts-row">
+            <span>Check-in due in 75 s</span>
+            <span>Reminder 1 min before</span>
+            <span>No grace period</span>
+            <span>1 min per contact</span>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg" id="startBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m7 4 13 8-13 8V4z"/></svg>
+            Start the demo
+          </button>
+          <p class="hint" style="margin-top:14px">Takes about 2½ minutes. Every button inside the phones works. For a hands-free run, open <a href="demo.html?auto=1">demo.html?auto=1</a>.</p>
+          <p class="sos-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span><b>Last Call is not an emergency service.</b> If someone is in danger, call your local emergency number.</span></p>
+        </div>
+      </div>
+
+      <div class="phone-tabs" id="tabs" role="tablist" aria-label="Whose phone" hidden>
+        <button type="button" role="tab" id="tab0" aria-controls="phone0" aria-selected="true" data-i="0"><span class="tdot" id="tdot0"></span><span id="tabName0">Sam</span></button>
+        <button type="button" role="tab" id="tab1" aria-controls="phone1" aria-selected="false" data-i="1"><span class="tdot" id="tdot1"></span><span id="tabName1">Alex</span></button>
+        <button type="button" role="tab" id="tab2" aria-controls="phone2" aria-selected="false" data-i="2"><span class="tdot" id="tdot2"></span><span id="tabName2">Jordan</span></button>
+      </div>
+
+      <div class="phones" id="phones" hidden>
+        <figure class="phone active" id="phone0" role="tabpanel" aria-labelledby="tab0">
+          <figcaption class="phone-label"><b id="label0">Sam</b><small id="role0">is out alone</small><span id="pill0"></span></figcaption>
+          <div class="phone-body"><div class="phone-screen" id="screen0"></div></div>
+        </figure>
+        <figure class="phone" id="phone1" role="tabpanel" aria-labelledby="tab1">
+          <figcaption class="phone-label"><b id="label1">Alex</b><small id="role1">contact #1</small><span id="pill1"></span></figcaption>
+          <div class="phone-body"><div class="phone-screen" id="screen1"></div></div>
+        </figure>
+        <figure class="phone" id="phone2" role="tabpanel" aria-labelledby="tab2">
+          <figcaption class="phone-label"><b id="label2">Jordan</b><small id="role2">contact #2</small><span id="pill2"></span></figcaption>
+          <div class="phone-body"><div class="phone-screen" id="screen2"></div></div>
+        </figure>
+      </div>
+    </div>
+
+    <aside class="demo-side" id="side" hidden>
+      <div class="side-card timeline-card">
+        <h2>Live timeline <span class="live" id="live"><span class="dot" aria-hidden="true"></span><span id="liveText">Live</span></span></h2>
+        <div class="scroll"><ol class="demo-tl" id="demoTl" aria-live="polite"></ol></div>
+      </div>
+      <div class="side-card links-card" id="linksCard">
+        <h2>Open these pages yourself</h2>
+        <ul id="links"></ul>
+        <p>Real links to this plan. Pushes go to fresh ntfy topics nobody is subscribed to.</p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>

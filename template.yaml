@@ -1,0 +1,280 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  Last Call - a serverless check-in safety net. Say what you're doing alone, when
+  you'll be back and who to tell; miss the check-in and your contacts are alerted
+  one by one until someone responds. HTTP API + Lambda + Step Functions + DynamoDB
+  + S3 + CloudFront.
+
+Parameters:
+  DailyPlanCap:
+    Type: Number
+    Default: 20
+    MinValue: 1
+    Description: Maximum plans a single source IP can create per UTC day.
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: [arm64]
+    CodeUri: src/
+    MemorySize: 256
+    Timeout: 10
+    Environment:
+      Variables:
+        TABLE_NAME: !Ref LastCallTable
+        WEB_BASE_URL: !Sub https://${WebDistribution.DomainName}
+
+Resources:
+  # ---------------------------------------------------------------- data
+
+  LastCallTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: PK, AttributeType: S }
+        - { AttributeName: SK, AttributeType: S }
+      KeySchema:
+        - { AttributeName: PK, KeyType: HASH }
+        - { AttributeName: SK, KeyType: RANGE }
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
+
+  # ---------------------------------------------------------------- web app
+
+  WebBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  WebOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub ${AWS::StackName}-web-${AWS::Region}
+        Description: CloudFront access to the private Last Call web bucket
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  WebDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: Last Call web app
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        PriceClass: PriceClass_100
+        Origins:
+          - Id: WebBucketOrigin
+            DomainName: !GetAtt WebBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt WebOriginAccessControl.Id
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: WebBucketOrigin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
+          ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03 # Managed-SecurityHeadersPolicy
+
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub ${WebBucket.Arn}/*
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${WebDistribution}
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt WebBucket.Arn
+              - !Sub ${WebBucket.Arn}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: 'false'
+
+  # ---------------------------------------------------------------- API
+
+  LastCallApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Description: Last Call public API
+      CorsConfiguration:
+        AllowOrigins: ['*']
+        AllowMethods: [GET, POST, OPTIONS]
+        AllowHeaders: [Content-Type]
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 20
+        ThrottlingBurstLimit: 40
+
+  CreatePlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /v1/plans - create a plan and start its workflow
+      Handler: handlers/createPlan.handler
+      Environment:
+        Variables:
+          STATE_MACHINE_ARN: !Ref LastCallStateMachine
+          DAILY_PLAN_CAP: !Ref DailyPlanCap
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+        - StepFunctionsExecutionPolicy: { StateMachineName: !GetAtt LastCallStateMachine.Name }
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: POST, Path: /v1/plans }
+
+  GetPlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: GET /v1/plans/{id} - owner view, authorised by the owner link secret
+      Handler: handlers/getPlan.handler
+      Policies:
+        - DynamoDBReadPolicy: { TableName: !Ref LastCallTable }
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: GET, Path: '/v1/plans/{id}' }
+
+  GetAlertFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: GET /v1/plans/{id}/alert - contact view, authorised by the contact link secret
+      Handler: handlers/getAlert.handler
+      Policies:
+        - DynamoDBReadPolicy: { TableName: !Ref LastCallTable }
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: GET, Path: '/v1/plans/{id}/alert' }
+
+  CheckinFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /v1/plans/{id}/checkin - safe, extend or sos, then nudge the workflow
+      Handler: handlers/checkin.handler
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+        # Task tokens are the capability here; SendTaskSuccess has no resource-level scoping.
+        - Statement:
+            - Effect: Allow
+              Action: states:SendTaskSuccess
+              Resource: '*'
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: POST, Path: '/v1/plans/{id}/checkin' }
+
+  LocationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /v1/plans/{id}/location - record the owner's location
+      Handler: handlers/location.handler
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: POST, Path: '/v1/plans/{id}/location' }
+
+  AckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: POST /v1/plans/{id}/ack - a contact says "I'm on it", then nudge the workflow
+      Handler: handlers/ack.handler
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+        - Statement:
+            - Effect: Allow
+              Action: states:SendTaskSuccess
+              Resource: '*'
+      Events:
+        Api:
+          Type: HttpApi
+          Properties: { ApiId: !Ref LastCallApi, Method: POST, Path: '/v1/plans/{id}/ack' }
+
+  # ---------------------------------------------------------------- workflow
+
+  AdvanceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Workflow task - apply due transitions and send due notifications
+      Handler: handlers/workflow/advance.handler
+      # Up to five SOS alerts plus bookkeeping, each send capped at 5 s.
+      Timeout: 60
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+
+  WaitForEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Workflow task - park the task token until the next milestone or a nudge
+      Handler: handlers/workflow/waitForEvent.handler
+      Policies:
+        - DynamoDBCrudPolicy: { TableName: !Ref LastCallTable }
+        - Statement:
+            - Effect: Allow
+              Action: states:SendTaskSuccess
+              Resource: '*'
+
+  LastCallStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Type: STANDARD
+      DefinitionUri: statemachine/lastcall.asl.json
+      DefinitionSubstitutions:
+        AdvanceFunctionArn: !GetAtt AdvanceFunction.Arn
+        WaitForEventFunctionArn: !GetAtt WaitForEventFunction.Arn
+      Policies:
+        - LambdaInvokePolicy: { FunctionName: !Ref AdvanceFunction }
+        - LambdaInvokePolicy: { FunctionName: !Ref WaitForEventFunction }
+
+Outputs:
+  ApiUrl:
+    Description: Base URL of the Last Call API
+    Value: !Sub https://${LastCallApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}
+  WebUrl:
+    Description: Web app (landing, new plan, owner and contact pages, demo)
+    Value: !Sub https://${WebDistribution.DomainName}
+  WebBucketName:
+    Description: Bucket the deploy script syncs web/ into
+    Value: !Ref WebBucket
+  DistributionId:
+    Description: CloudFront distribution to invalidate after a web deploy
+    Value: !Ref WebDistribution
+  TableName:
+    Description: DynamoDB single table
+    Value: !Ref LastCallTable
+  StateMachineArn:
+    Description: One execution per plan
+    Value: !Ref LastCallStateMachine

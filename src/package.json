@@ -1,0 +1,7 @@
+{
+  "name": "lastcall-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lambda handlers for Last Call. No runtime dependencies: the AWS SDK v3 comes from the Lambda runtime.",
+  "type": "module"
+}
