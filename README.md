@@ -85,6 +85,32 @@ Everything is one AWS SAM template: no servers, containers or pipelines.
 - **Links are the keys.** Owner and contact secrets live in the URL fragment, so
   they never reach access logs, and are stored only as SHA-256 hashes.
 
+## The API
+
+The web app is a thin client over six endpoints. There are no accounts: `s` is
+the owner's or a contact's secret from their private link, and `c` is the
+contact's position in the list.
+
+| Method and path | Who | What it does |
+|---|---|---|
+| `POST /v1/plans` | anyone | Create a plan and start its workflow. Returns the owner link and one alert link per contact. |
+| `GET /v1/plans/{id}?s=` | owner | The owner's view: status, deadline, contacts, timeline, and the server's `now`. |
+| `POST /v1/plans/{id}/checkin?s=` | owner | `{"action": "safe"}`, `{"action": "extend", "minutes": 30}` or `{"action": "sos"}`, with an optional note and location. |
+| `POST /v1/plans/{id}/location?s=` | owner | Share a location fix: `{"lat", "lng", "accuracy"}`. |
+| `GET /v1/plans/{id}/alert?c=&s=` | contact | The contact's view: the plan, how overdue it is, the last known location, who has been alerted. |
+| `POST /v1/plans/{id}/ack?c=&s=` | contact | "I'm on it", with an optional note. Stops the escalation. |
+
+A plan needs a `name`, an `activity`, a deadline (`checkInBy` as an ISO time, or
+`checkInInSeconds` so the server computes it) and one to five `contacts`.
+Optional fields: `details`, `routeUrl`, `phone`, `location`, `timeZone`,
+`ownerNotifyUrl`, and the timings `remindMinutesBefore`, `graceMinutes` and
+`ackMinutes`.
+
+The check-in and acknowledge endpoints also accept their action in the query
+string (`a=safe`, `a=extend&m=30`, `a=ack`) with no body, which is what makes the
+one-tap buttons in a push notification work. Plan creation is limited to 20
+plans per source IP per UTC day by default (`DAILY_PLAN_CAP`).
+
 ## Run it yourself
 
 Requirements: Node.js 20+, the AWS CLI, and the AWS SAM CLI, signed in to an AWS
