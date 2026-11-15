@@ -702,8 +702,10 @@ html.embed .big-safe { min-height: 68px; font-size: 23px; }
 .phone-tabs .tdot.t-ok { background: var(--ok); }
 .phones { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: flex-start; gap: 28px; }
 .phone { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; }
-.phone-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 750; white-space: nowrap; }
+.phone-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 750; white-space: nowrap; max-width: calc(var(--screen-w, 300px) + 18px); overflow: hidden; }
 .phone-label small { font-weight: 600; color: var(--ink-3); font-size: 13px; }
+/* small phones (short or narrow windows): drop the role so labels never run into each other */
+.phones.compact .phone-label small { display: none; }
 .phone-label .pill { font-size: 11.5px; min-height: 22px; }
 .phone-body { padding: 9px; border-radius: 40px; background: #121316; box-shadow: var(--shadow-lg), inset 0 0 0 1.5px #2c2e33; position: relative; transition: box-shadow 0.4s ease; }
 .phone-body::before { content: ""; position: absolute; top: 15px; left: 50%; width: 72px; height: 18px; margin-left: -36px; border-radius: 12px; background: #000; z-index: 2; opacity: 0.92; }

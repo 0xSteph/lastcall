@@ -173,6 +173,18 @@
       f.style.height = Math.ceil(h / scale) + "px";
       f.style.transform = "scale(" + scale + ")";
     });
+    fitLabels();
+  }
+  // Each label is capped at its phone's width. When name + role + status pill don't
+  // fit (small phones in a short or narrow window), drop the role instead of
+  // letting the labels run into each other.
+  function fitLabels() {
+    var phones = $("phones");
+    phones.classList.remove("compact");
+    var labels = phones.querySelectorAll(".phone-label");
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i].scrollWidth > labels[i].clientWidth + 1) { phones.classList.add("compact"); break; }
+    }
   }
   window.addEventListener("resize", function () { layout(); });
 
@@ -363,6 +375,7 @@
       $("pill" + (i + 1)).innerHTML = LC.contactChip(c);
       $("tdot" + (i + 1)).className = "tdot " + (c.allClearSent ? "t-ok" : c.state === "acknowledged" ? "t-brand" : c.state === "alerted" ? "t-no" : "");
     });
+    fitLabels();
     tickClock();
   }
 
