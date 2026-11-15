@@ -82,17 +82,18 @@ account.
 
 ```bash
 npm install
-npm test                       # backend unit tests
-node --test mock/              # web app and mock API tests
-node scripts/deploy.mjs        # sam build + deploy, then uploads the web app
-node scripts/e2e.mjs <ApiUrl>  # end-to-end test against your stack (~2.5 min)
+npm test                  # backend unit tests
+npm run test:web          # web app and mock API tests
+npm run test:all          # both
+npm run deploy            # sam build + deploy, then uploads the web app
+npm run e2e -- <ApiUrl>   # end-to-end test against your stack (~2.5 min)
 ```
 
 The first deploy takes about 5 to 10 minutes, mostly CloudFront. To remove it,
 empty the web bucket, then run `sam delete --stack-name lastcall`.
 
-For front-end work without AWS, `node mock/server.mjs` runs an in-memory copy of
-the API with real timers and serves the web app at http://localhost:8787/web/.
+For front-end work without AWS, `npm run mock` runs an in-memory copy of the API
+with real timers and serves the web app at http://localhost:8787/web/.
 
 ## Repository layout
 

@@ -10,6 +10,9 @@
   },
   "scripts": {
     "test": "node --test \"tests/**/*.test.mjs\"",
+    "test:web": "node --test mock/",
+    "test:all": "npm test && npm run test:web",
+    "mock": "node mock/server.mjs",
     "validate": "node scripts/validate.mjs",
     "deploy": "node scripts/deploy.mjs",
     "e2e": "node scripts/e2e.mjs"
