@@ -137,7 +137,7 @@ export function planItem({ base = T0, ...overrides } = {}) {
     id: PLAN_ID,
     name: 'Sam',
     activity: 'Solo hike: Dipsea Trail loop',
-    details: 'Parked at the trailhead. **Blue Subaru.**',
+    details: 'Parked at the trailhead. **Blue hatchback.**',
     routeUrl: 'https://example.com/route',
     phone: '+1 555 0100',
     timeZone: 'America/Los_Angeles',

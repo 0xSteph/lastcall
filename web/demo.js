@@ -13,7 +13,7 @@
     name: "Sam",
     activity: "Solo hike: Dipsea Trail loop",
     details: "**Route:** Dipsea Trail from Mill Valley toward Stinson Beach and back, about 14 km.\n" +
-      "**Parked:** silver Subaru at the Old Mill Park lot.\n" +
+      "**Parked:** silver hatchback at the Old Mill Park lot.\n" +
       "**Gear:** water, headlamp, phone at 80%.",
     routeUrl: "https://www.openstreetmap.org/?mlat=37.8968&mlon=-122.5541#map=14/37.8968/-122.5541",
     phone: "+1 555 0100",

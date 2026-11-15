@@ -46,7 +46,7 @@ describe('POST /v1/plans', () => {
   const body = (overrides = {}) => ({
     name: 'Sam',
     activity: 'Solo hike: Dipsea Trail loop',
-    details: 'Blue Subaru at the trailhead',
+    details: 'Blue hatchback at the trailhead',
     checkInBy: new Date(Date.now() + 3 * 3_600_000).toISOString(),
     timeZone: 'America/Los_Angeles',
     contacts: [{ name: 'Alex', relationship: 'sister' }, { name: 'Jordan', notifyUrl: 'https://hooks.slack.com/services/T/B/x' }],

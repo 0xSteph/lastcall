@@ -40,7 +40,7 @@ describe('validateCreatePlan', () => {
 
   it('accepts the full documented body', () => {
     const plan = validateCreatePlan(valid({
-      details: '**Blue Subaru** at the trailhead',
+      details: '**Blue hatchback** at the trailhead',
       routeUrl: 'https://example.com/route',
       phone: '+1 555 0100',
       remindMinutesBefore: 0,
