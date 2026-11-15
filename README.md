@@ -10,6 +10,12 @@ location, until someone says "I'm on it".
 
 It runs entirely on serverless AWS, and nothing runs while a plan is waiting.
 
+[![Last Call: a hiker at night beside a phone showing a missed check-in](assets/cover.jpg)](https://www.youtube.com/watch?v=FnKasCr2pxU)
+
+**Watch it:** the [2-minute video](https://www.youtube.com/watch?v=FnKasCr2pxU)
+tells the story of one evening. Every phone screen in it is the real app,
+recorded from one live plan run.
+
 **Try it:** the [2-minute live demo](https://d2ifh0zqxfrt39.cloudfront.net/demo.html)
 creates a real plan and shows the owner's and both contacts' phones side by side.
 
@@ -35,6 +41,10 @@ Alerts are phone push notifications through the free [ntfy](https://ntfy.sh) app
 (no account needed), or Slack, Discord or any HTTPS webhook.
 
 ## How it's built
+
+![Architecture: the HTTP API writes to DynamoDB and nudges a Step Functions loop of Advance and WaitForEvent](assets/architecture.png)
+
+The loop, in text:
 
 ```
              ┌────────────────────────────────────────────┐
@@ -107,3 +117,8 @@ with real timers and serves the web app at http://localhost:8787/web/.
 | `mock/` | In-memory mock of the API for local development, plus web tests |
 | `tests/` | Backend unit tests, including a full simulated plan lifecycle |
 | `scripts/` | Deploy, validate and end-to-end test scripts |
+| `assets/` | Images used in this README |
+
+## Licence
+
+[MIT](LICENSE)
